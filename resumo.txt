@@ -121,3 +121,11 @@ Etapa 13 — Preparação do repositório
 - Repositório Git inicializado somente em Projeto Final; os exercícios originais não serão incluídos.
 - .env, node_modules, dist e logs excluídos do versionamento.
 - Preparado envio da versão final para GitHub privado henriqueszyber/new-paulista-times.
+
+Etapa 14 — Repositório privado concluído
+- Criado https://github.com/henriqueszyber/new-paulista-times com private=true na conta autenticada henriqueszyber.
+- git init -b main; git add apenas fontes/documentação/logo/configurações; git commit; git remote add origin; git push -u origin main.
+- Verificação antes do commit: 42 arquivos; nenhum segredo detectado nos arquivos preparados. .env, dependências, build e logs ignorados.
+- Primeiro commit enviado com sucesso: 8e848aa (Adapta portal New Paulista Times aos trabalhos do curso Jynx).
+- git ls-remote confirmou a branch main no GitHub. Este registro final será incluído em um segundo commit de documentação.
+- Projeto disponível localmente em http://127.0.0.1:5173 enquanto os processos iniciados estiverem ativos.
