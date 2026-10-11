@@ -1,0 +1,123 @@
+RESUMO CRONOLÓGICO — PORTAL JYNX
+
+Etapa 1 — Inspeção e decisões (29/09/2026)
+- Localizada a pasta Projeto Final através dos registros de janelas do VS Code.
+- Get-ChildItem -Force e rg --files confirmaram que a pasta estava vazia.
+- Verificadas instruções AGENTS.md nos diretórios ancestrais: nenhuma encontrada.
+- node --version: v24.13.1; npm.cmd --version: 11.8.0.
+- Escolha: JavaScript, React + Vite e Node + Express, sem banco, ORM, editor rico ou biblioteca visual.
+- Login de demonstração validado na API; sessões e notícias em memória.
+- Criado resumo.txt; nenhuma alteração em arquivos existentes ou em sources/.
+
+Etapa 2 — Estrutura e API
+- Criados package.json (workspaces), .gitignore, backend/package.json e backend/src/{data,app,server}.js.
+- API: GET /api/health, GET /api/news, GET /api/news/:id, POST /api/news.
+- Login: POST /api/auth/login, GET /api/auth/me, POST /api/auth/logout; GET /api/users restrito a administradores.
+- Sessões aleatórias com expiração de 8 horas; campos validados; autor atribuído pelo servidor.
+- Dados e contas fictícios. Todos os papéis publicam; ADMIN e SUPER_ADMIN consultam usuários.
+- Arquivos preparados na área temporária do trabalho e copiados usando Copy-Item para a pasta solicitada.
+
+Etapa 3 — Frontend
+- Criados frontend/package.json, index.html, vite.config.js, src/{main.jsx,api.js,styles.css}.
+- Implementadas Home com cards e filtro por categoria, notícia, login, dashboard, criação e usuários.
+- React com navegação por hash, sem biblioteca de rotas. CSS responsivo e ilustrações geométricas locais, sem imagens externas.
+- Vite encaminha /api ao Express na porta 3001; frontend na porta 5173.
+- Formulário usa textarea; publicação retorna a página da notícia e aparece na Home.
+- Incluídos estados de carregamento, erros, conteúdo vazio e bloqueio de envio duplicado.
+- Token guardado em sessionStorage e conferido no backend ao recarregar.
+
+Etapa 4 — Documentação e testes
+- Criados README.md e backend/test/api.test.js.
+- README explica inicialização em dois terminais, contas, rotas, estrutura e limites.
+- Teste de integração usa node:test, sem dependência adicional; cobre health, leitura, 404, login inválido, três papéis, acesso negado, validação, publicação, autor e logout.
+- Comandos em execução: npm.cmd install, npm.cmd test e npm.cmd run build.
+
+Etapa 5 — Resultado das verificações
+- npm.cmd install: 87 pacotes adicionados; 90 auditados; nenhuma vulnerabilidade reportada. Criado package-lock.json.
+- npm.cmd test: PASSOU. 1 teste de integração contendo verificações de leitura, autenticação, autorização, validação, publicação, autoria e logout; 0 falhas.
+- npm.cmd run build: PASSOU. Vite 7.3.6, 24 módulos; saída em frontend/dist.
+- Servidores iniciados com Start-Process -WindowStyle Hidden: node backend/src/server.js e node ../node_modules/vite/bin/vite.js --host 127.0.0.1 (dentro de frontend).
+- Backend disponível em http://127.0.0.1:3001/api/health; frontend em http://127.0.0.1:5173.
+- Logs locais: backend-dev.log, backend-error.log, frontend-dev.log, frontend-error.log (ignorados pelo Git).
+- Conferência no navegador: Home com cards, login SUPER_ADMIN, dashboard, formulário, publicação, artigo, lista com SUPER_ADMIN/ADMIN/WRITER e logout funcionando.
+- Publicação demonstrativa criada pelo formulário: Primeira publicação no portal Jynx; confirmada na Home e nos contadores do dashboard.
+- Navegação por teclado verificada. Inspeção visual da Home em largura estreita e intermediária; não foi realizada uma auditoria completa de acessibilidade ou de todos os navegadores.
+- Nenhum erro de console observado na consulta realizada durante a navegação.
+- Decisão final: preservar simplicidade. Sem banco e sem persistência; notícias e sessões desaparecem ao reiniciar a API. Credenciais exclusivamente demonstrativas.
+- Para iniciar posteriormente: npm run dev:backend em um terminal e npm run dev:frontend em outro. Consulte README.md.
+
+Etapa 6 — Separação do backend em camadas
+- Criadas pastas src/controllers, src/repositories e src/routes.
+- Repositories: newsRepository.js (notícias), userRepository.js (usuários) e sessionRepository.js (sessões).
+- Controllers: newsController.js, authController.js, userController.js e healthController.js.
+- Routes: newsRoutes.js, authRoutes.js, userRoutes.js e healthRoutes.js; definem caminhos e middlewares.
+- app.js agora monta as dependências, registra as rotas e trata erros; server.js continua inicializando o servidor.
+- data.js preservado como fonte dos dados fictícios. Frontend e contratos da API preservados.
+- Fluxo didático: routes -> controllers -> repositories. Sem classes, ORM ou camada extra de serviços.
+- Comandos: New-Item e Set-Content para criar pastas e arquivos; Add-Content para atualizar este registro.
+
+Etapa 7 — Teste isolado de conexão Neon
+- Instalado pg com npm.cmd install pg --workspace backend (14 pacotes; 0 vulnerabilidades reportadas).
+- Atualizados backend/package.json e package-lock.json; adicionado script db:check.
+- Criados repositories/database.js, scripts/checkDatabase.js e backend/.env.example.
+- Credencial fornecida salva somente em backend/.env, já ignorado pela regra .env do .gitignore. Não reproduzida em documentação ou logs.
+- Usado carregamento de .env nativo do Node; sem dotenv ou Prisma.
+- Conexão configurada com TLS verify-full, channel binding habilitado e limites de tempo.
+- Teste executa SELECT 1, sem criar/alterar tabelas ou dados. API ainda usa repositories em memória.
+- README.md atualizado com estrutura em camadas e comando de teste da conexão.
+
+Etapa 8 — Verificação da reorganização e do Neon
+- npm.cmd test: PASSOU, 1 teste de integração, 0 falhas; mesmos contratos HTTP após a separação em camadas.
+- npm.cmd run db:check --workspace backend: PASSOU; conexão TLS e SELECT 1 concluídos com sucesso, saída 0.
+- Nenhuma tabela ou dado do Neon foi alterado.
+- Frontend não alterado nesta etapa; build não repetido porque a mudança ficou restrita ao backend.
+- Processo de desenvolvimento previamente aberto não foi reiniciado para preservar notícias em memória; ao reiniciá-lo, carregará a nova estrutura.
+
+Etapa 9 — Revisão a partir dos trabalhos Jynx (11/10/2026)
+- Lidas as pastas REACT 1, REACT 3, frontend, API, backend, Back End e exemplos de aulas.
+- Identificados React/Vite, React Router, useState/useEffect, fetch/async/await/JSON, laços for, arrays/objetos, formulários, cards, tabelas e CSS responsivo.
+- Backend das aulas usa Fastify e @neondatabase/serverless; o protótipo será ajustado a essa base no lugar de Express e pg.
+- Integração React/API das aulas ainda é um esboço; os exemplos completos de fetch estão em frontend/app.js e API/script.js.
+- Decisão: preservar funções do portal e controles mínimos de acesso; retirar abstrações extras como hook próprio, roteador manual e persistência de sessão no navegador.
+- Logo original fornecido copiado sem alterações para frontend/public/logo-new-paulista-times.png.
+- Nome e título alterados para New Paulista Times; identidade visual branco/preto/vermelho.
+- .gitignore reforçado para arquivos .env e logs. Credenciais de exemplos não serão copiadas para o repositório.
+- Usuário escolheu repositório GitHub privado. Autenticação local do GitHub confirmada sem exibir tokens.
+- Comandos de inspeção: Get-ChildItem, rg --files, rg -n, Get-Content; edições com Set-Content e Copy-Item.
+
+Etapa 10 — Backend baseado nos exercícios
+- Fastify substituiu Express; rotas registradas com register e prefix.
+- Controllers e repositories agora são objetos com métodos async, como nos exemplos da Jynx.
+- Repositories usam arrays, for, push e splice. Removidos Map e factories das camadas.
+- Mantidos validação, autorização por papel, logout e identificação do autor pela sessão.
+- UUID de sessão e proteção de rotas são infraestrutura mínima de segurança, explicada no código e no mapa de recursos.
+- Driver Neon alterado de pg para @neondatabase/serverless. Teste opcional faz SELECT 1 via HTTPS.
+- Teste da API adaptado ao Fastify; erro de Content-Type incompatível tratado como 415.
+- Atualizados backend/src, backend/scripts/checkDatabase.js, backend/test/api.test.js e backend/package.json.
+- Criado docs/recursos-do-curso.md com as referências concretas e limites da comparação.
+- README.md reescrito para a versão atual; histórico anterior preservado neste resumo.
+
+Etapa 11 — Frontend baseado nos exercícios
+- Criadas páginas Inicio, Noticia, Login, Painel, NovaNoticia, Usuarios e NaoEncontrada em frontend/src/pages.
+- Criados componentes Layout e CardNoticia; navegação com createBrowserRouter, RouterProvider e Link, como REACT 3.
+- Listas com arrays e for; formulários com campos explícitos; comunicação fetch/async/await.
+- Removidos hook próprio, sessionStorage, roteador por hash e FormData/Object.fromEntries.
+- Login é validado na API; estado local em session.js. Atualizar a página exige novo login.
+- Logo original local e CSS responsivo branco/preto/vermelho; título New Paulista Times.
+- Atualizados frontend/src, frontend/package.json, frontend/index.html, package.json e package-lock.json.
+
+Etapa 12 — Instalação e verificações finais
+- npm.cmd install: dependências da nova versão instaladas; alerta indireto de source-map-js identificado.
+- npm.cmd update source-map-js: dependência indireta corrigida, auditoria final com 0 vulnerabilidades.
+- npm.cmd test: PASSOU; integração HTTP com leitura, login, três papéis, publicação, autoria, validação, logout e Content-Type inválido (415).
+- npm.cmd run build: PASSOU; 46 módulos, saída em frontend/dist. Vite informou avisos não bloqueantes de diretivas use client do React Router.
+- npm.cmd run db:check --workspace backend: PASSOU; SELECT 1 via HTTPS, sem alteração de tabelas ou dados.
+- Servidores iniciados com Start-Process -WindowStyle Hidden; frontend 5173 e backend 3001.
+- Invoke-RestMethod/Invoke-WebRequest: health via proxy OK; Home 200 com título correto; rota direta /noticia/1 200; logo 200 (116659 bytes).
+- Controle visual automatizado indisponível por falha de inicialização do navegador; não foi concluído teste visual/interativo desta nova versão. Código revisado, build e API verificados.
+- O limite temporário de revisão automática interrompeu uma verificação; retomada após solicitação do usuário.
+
+Etapa 13 — Preparação do repositório
+- Repositório Git inicializado somente em Projeto Final; os exercícios originais não serão incluídos.
+- .env, node_modules, dist e logs excluídos do versionamento.
+- Preparado envio da versão final para GitHub privado henriqueszyber/new-paulista-times.

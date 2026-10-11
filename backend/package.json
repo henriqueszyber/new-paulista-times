@@ -1,0 +1,15 @@
+{
+  "name": "new-paulista-times-backend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "db:check": "node --env-file-if-exists=.env scripts/checkDatabase.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.1.0",
+    "fastify": "^5.12.1"
+  }
+}
