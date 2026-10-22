@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node --watch src/server.js",
-    "start": "node src/server.js",
-    "test": "node --test",
+    "dev": "node --env-file-if-exists=.env --experimental-sqlite --watch src/server.js",
+    "start": "node --env-file-if-exists=.env --experimental-sqlite src/server.js",
+    "test": "node --experimental-sqlite --test",
     "db:check": "node --env-file-if-exists=.env scripts/checkDatabase.js"
   },
   "dependencies": {

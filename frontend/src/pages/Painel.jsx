@@ -18,7 +18,7 @@ export default function Painel() {
       }
 
       try {
-        const dados = await api('/news');
+        const dados = await api('/news/manage', { token: sessao.token });
         setNoticias(dados);
       } catch (erro) {
         setErro(erro.message);
@@ -32,18 +32,23 @@ export default function Painel() {
 
   const linhas = [];
   let minhasNoticias = 0;
+  let publicadas = 0;
   for (let i = 0; i < noticias.length; i++) {
     const noticia = noticias[i];
     if (usuario && noticia.authorId === usuario.id) {
       minhasNoticias++;
     }
+    if (noticia.status === 'published') publicadas++;
+
+    const podeEditar = usuario && (usuario.id === noticia.authorId || usuario.role !== 'WRITER');
 
     linhas[linhas.length] = (
       <tr key={noticia.id}>
-        <td><Link to={'/noticia/' + noticia.id}>{noticia.title}</Link></td>
+        <td><Link to={podeEditar ? '/admin/editar/' + noticia.id : '/noticia/' + noticia.id}>{noticia.title}</Link></td>
         <td>{noticia.author}</td>
         <td>{noticia.category}</td>
-        <td><span className="badge">Publicada</span></td>
+        <td><span className="badge">{noticia.status === 'draft' ? 'Rascunho' : 'Publicada'}</span></td>
+        <td>{podeEditar && <Link to={'/admin/editar/' + noticia.id}>Editar</Link>}</td>
       </tr>
     );
   }
@@ -62,9 +67,9 @@ export default function Painel() {
           </div>
 
           <div className="stats">
-            <div><strong>{noticias.length}</strong><span>Notícias publicadas</span></div>
-            <div><strong>{minhasNoticias}</strong><span>Publicadas por você</span></div>
-            <div><strong className="role">{usuario.role}</strong><span>Seu papel na redação</span></div>
+            <div><strong>{publicadas}</strong><span>Notícias publicadas</span></div>
+            <div><strong>{noticias.length - publicadas}</strong><span>Rascunhos</span></div>
+            <div><strong>{minhasNoticias}</strong><span>Notícias criadas por você</span></div>
           </div>
 
           <section className="panel">
@@ -75,7 +80,7 @@ export default function Painel() {
             {noticias.length > 0 && (
               <div className="table-wrap">
                 <table>
-                  <thead><tr><th>Título</th><th>Autor</th><th>Categoria</th><th>Status</th></tr></thead>
+                  <thead><tr><th>Título</th><th>Autor</th><th>Categoria</th><th>Status</th><th>Ação</th></tr></thead>
                   <tbody>{linhas}</tbody>
                 </table>
               </div>

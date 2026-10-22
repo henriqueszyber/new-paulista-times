@@ -17,6 +17,7 @@ const rotas = createBrowserRouter([
   { path: '/login', element: <Login /> },
   { path: '/admin', element: <Painel /> },
   { path: '/admin/nova', element: <NovaNoticia /> },
+  { path: '/admin/editar/:id', element: <NovaNoticia /> },
   { path: '/admin/usuarios', element: <Usuarios /> },
   { path: '*', element: <NaoEncontrada /> },
 ]);
