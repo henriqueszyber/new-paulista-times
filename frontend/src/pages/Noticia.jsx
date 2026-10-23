@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
+import TextView from '../components/TextView.jsx';
 import { api } from '../api.js';
 
 export default function Noticia() {
@@ -37,7 +38,7 @@ export default function Noticia() {
             <p className="byline">
               Por <strong>{noticia.author}</strong> · {new Date(noticia.createdAt).toLocaleDateString('pt-BR')}
             </p>
-            <div className="article-content">{noticia.content}</div>
+            <TextView content={noticia.content} />
           </>
         )}
       </article>

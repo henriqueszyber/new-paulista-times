@@ -6,7 +6,8 @@ const port = Number(process.env.PORT) || 3001;
 try {
   await app.listen({ port, host: '127.0.0.1' });
   console.log(`API New Paulista Times: http://127.0.0.1:${port}/api/health`);
-} catch {
-  console.error('Não foi possível iniciar a API. Confira se a porta está disponível.');
+} catch (error) {
+  const code = /^[A-Z0-9_]+$/.test(error.code ?? '') ? error.code : 'START_ERROR';
+  console.error(`Não foi possível iniciar a API (${code}). Confira a porta e a conexão com o banco.`);
   process.exitCode = 1;
 }

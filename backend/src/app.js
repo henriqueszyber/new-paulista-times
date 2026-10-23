@@ -3,10 +3,13 @@ import healthRoutes from './routes/healthRoutes.js';
 import newsRoutes from './routes/newsRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
+import newsRepository from './repositories/newsRepository.js';
 
 // Cada grupo de rotas recebe um prefixo, como nos exercícios de backend.
 export function createApp() {
-  const app = Fastify({ bodyLimit: 100 * 1024 });
+  const app = Fastify({ bodyLimit: 256 * 1024 });
+
+  app.addHook('onReady', async () => { await newsRepository.init(); });
 
   app.register(healthRoutes, { prefix: '/api/health' });
   app.register(newsRoutes, { prefix: '/api/news' });
