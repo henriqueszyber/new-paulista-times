@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Layout from '../components/Layout.jsx';
+import CoverUpload from '../components/CoverUpload.jsx';
 import TextEditor from '../components/TextEditor.jsx';
 import { emptyDocument } from '../richText.js';
 import { api } from '../api.js';
@@ -14,6 +15,11 @@ export default function NovaNoticia() {
   const [categoria, setCategoria] = useState('Cidade');
   const [conteudoInicial, setConteudoInicial] = useState(emptyDocument);
   const [conteudo, setConteudo] = useState(emptyDocument);
+  const [imageUrl, setImageUrl] = useState('');
+  const [imagePublicId, setImagePublicId] = useState('');
+  const [imageAlt, setImageAlt] = useState('');
+  const [imageCredit, setImageCredit] = useState('');
+  const [imagemPendente, setImagemPendente] = useState(false);
   const [status, setStatus] = useState('draft');
   const [erro, setErro] = useState('');
   const [mensagem, setMensagem] = useState('');
@@ -53,6 +59,10 @@ export default function NovaNoticia() {
         setConteudoInicial(noticia.content);
         setConteudo(noticia.content);
         setStatus(noticia.status);
+        setImageUrl(noticia.imageUrl || '');
+        setImagePublicId(noticia.imagePublicId || '');
+        setImageAlt(noticia.imageAlt || '');
+        setImageCredit(noticia.imageCredit || '');
         revisaoSalva.current = revisaoAtual.current;
         setSalvamentoAutomatico('');
       } catch (error) {
@@ -66,7 +76,7 @@ export default function NovaNoticia() {
   }, [id]);
 
   useEffect(() => {
-    if (!id || status !== 'draft' || carregando || enviando || revisao === revisaoSalva.current) return;
+    if (!id || status !== 'draft' || carregando || enviando || imagemPendente || revisao === revisaoSalva.current) return;
     let active = true;
     const timer = setTimeout(async () => {
       const snapshot = revisaoAtual.current;
@@ -74,6 +84,7 @@ export default function NovaNoticia() {
       try {
         await enviarEmOrdem('/news/' + encodeURIComponent(id), 'PUT', {
           title: titulo, summary: resumo, category: categoria, content: conteudo, status: 'draft',
+          imageUrl, imagePublicId, imageAlt, imageCredit,
         });
         if (active && revisaoAtual.current === snapshot) {
           revisaoSalva.current = snapshot;
@@ -84,16 +95,17 @@ export default function NovaNoticia() {
       }
     }, 1800);
     return () => { active = false; clearTimeout(timer); };
-  }, [id, status, carregando, enviando, revisao, titulo, resumo, categoria, conteudo]);
+  }, [id, status, carregando, enviando, imagemPendente, revisao, titulo, resumo, categoria, conteudo, imageUrl, imagePublicId, imageAlt, imageCredit]);
 
   async function salvar(novoStatus) {
+    if (imagemPendente) { setErro('Envie ou cancele a imagem selecionada antes de salvar.'); return; }
     setErro('');
     setMensagem('');
     setEnviando(true);
     const snapshot = revisaoAtual.current;
     try {
       const noticia = await enviarEmOrdem(id ? '/news/' + encodeURIComponent(id) : '/news', id ? 'PUT' : 'POST',
-        { title: titulo, summary: resumo, category: categoria, content: conteudo, status: novoStatus });
+        { title: titulo, summary: resumo, category: categoria, content: conteudo, status: novoStatus, imageUrl, imagePublicId, imageAlt, imageCredit });
       setStatus(noticia.status);
       if (revisaoAtual.current === snapshot) revisaoSalva.current = snapshot;
       setSalvamentoAutomatico('');
@@ -134,6 +146,21 @@ export default function NovaNoticia() {
               <option>Educação</option><option>Esportes</option>
             </select>
 
+            <fieldset className="cover-field">
+              <legend>Imagem de capa (opcional)</legend>
+              <CoverUpload imageUrl={imageUrl} disabled={enviando} onPendingChange={setImagemPendente}
+                onUploaded={dados => { setImageUrl(dados.imageUrl); setImagePublicId(dados.imagePublicId); marcarAlteracao(); }}
+                onRemove={() => { setImageUrl(''); setImagePublicId(''); setImageAlt(''); setImageCredit(''); marcarAlteracao(); }} />
+              {imageUrl && <>
+                <label htmlFor="image-alt">Descrição da imagem</label>
+                <input id="image-alt" maxLength={300} value={imageAlt} placeholder="Descreva o que aparece na foto."
+                  onChange={event => { setImageAlt(event.target.value); marcarAlteracao(); }} />
+                <label htmlFor="image-credit">Crédito da foto</label>
+                <input id="image-credit" maxLength={200} value={imageCredit} placeholder="Nome do fotógrafo ou fonte."
+                  onChange={event => { setImageCredit(event.target.value); marcarAlteracao(); }} />
+              </>}
+            </fieldset>
+
             <label id="conteudo-label">Conteúdo</label>
             <TextEditor initialContent={conteudoInicial} onChange={documento => { setConteudo(documento); marcarAlteracao(); }} />
 
@@ -142,10 +169,10 @@ export default function NovaNoticia() {
             {erro && <p className="notice" role="alert">{erro}</p>}
             {mensagem && <p className="success-message" role="status">{mensagem}</p>}
             <div className="form-actions">
-              <button className="button" type="submit" disabled={enviando}>
+              <button className="button" type="submit" disabled={enviando || imagemPendente}>
                 {enviando ? 'Salvando…' : status === 'published' ? 'Salvar publicação →' : 'Publicar notícia →'}
               </button>
-              <button className="secondary-button" type="button" disabled={enviando} onClick={() => salvar('draft')}>Salvar rascunho</button>
+              <button className="secondary-button" type="button" disabled={enviando || imagemPendente} onClick={() => salvar('draft')}>Salvar rascunho</button>
               <Link to="/admin">Voltar ao painel</Link>
             </div>
           </form>

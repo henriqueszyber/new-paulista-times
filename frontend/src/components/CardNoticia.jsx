@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 export default function CardNoticia({ noticia }) {
   return (
     <article className="news-card">
+      {noticia.imageUrl && <img className="card-cover" src={noticia.imageUrl} alt={noticia.imageAlt || noticia.title} loading="lazy" />}
       <p className="eyebrow">{noticia.category}</p>
       <h3><Link to={'/noticia/' + noticia.id}>{noticia.title}</Link></h3>
       <p className="card-summary">{noticia.summary}</p>

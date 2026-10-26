@@ -62,6 +62,7 @@ backend/
 | POST | `/api/auth/logout` | Logado |
 | POST | `/api/news` | Logado: `title`, `summary`, `category`, `content`, `status` |
 | PUT | `/api/news/:id` | Autor ou administrador; mesmos campos do POST |
+| POST | `/api/images` | Logado; multipart/form-data, campo de arquivo `image` |
 | GET | `/api/users` | ADMIN ou SUPER_ADMIN |
 
 Rotas protegidas recebem `Authorization: Bearer TOKEN`, retornado pelo login. Ao enviar JSON, use `Content-Type: application/json`. `status` aceita `draft` ou `published`. O conteúdo é um objeto JSON com blocos de parágrafo, título, subtítulo ou item de lista e trechos de texto com negrito, itálico e link. A API valida esse formato e aceita apenas links HTTP/HTTPS. Rascunhos não aparecem nas rotas públicas. Para publicar, resumo e corpo precisam conter texto.
@@ -79,7 +80,7 @@ Os testes usam um banco SQLite temporário e não alteram as notícias locais. O
 
 O site usa SQLite local por padrão. Para usar Neon:
 
-1. Copie `backend/.env.example` para `backend/.env` somente quando tiver uma conexão Neon.
+1. Se ainda não existir, copie `backend/.env.example` para `backend/.env`. Preserve um arquivo que já esteja preenchido.
 2. Preencha `DATABASE_URL` com sua conexão.
 3. Reinicie o backend. Ele cria a tabela `news` no Neon e passa a salvar notícias nesse banco.
 
@@ -87,4 +88,18 @@ Para testar apenas a conexão, execute `npm run db:check --workspace backend`. E
 
 ## Limites atuais
 
-O editor não oferece upload de imagens ou anexos. O Git guarda checkpoints do código, mas não versões do conteúdo salvo no banco. Este é um projeto educacional com notícias fictícias e identidade própria, sem vínculo com outros jornais.
+O portal aceita uma capa por notícia. Ainda não há imagens dentro do corpo do editor nem anexos. Remover ou trocar a capa não apaga o arquivo remoto; a limpeza no Cloudinary é manual. O Git guarda checkpoints do código, mas não versões do conteúdo salvo no banco. Este é um projeto educacional com notícias fictícias e identidade própria, sem vínculo com outros jornais.
+
+## Imagem de capa com Cloudinary
+
+No `backend/.env`, preencha `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY` e `CLOUDINARY_API_SECRET` a partir da sua conta e reinicie o backend. Não coloque o segredo no frontend. Para usar somente SQLite, deixe `DATABASE_URL` vazia; o upload funciona com qualquer um dos dois bancos. Sem Cloudinary configurado, notícias sem capa continuam funcionando.
+
+Na criação ou edição, escolha JPEG, PNG ou WebP de até 5 MB e clique em **Enviar imagem**. Depois preencha descrição/crédito e salve o rascunho ou publique. Enquanto a seleção estiver pendente, envie ou cancele para liberar o salvamento.
+
+O upload retorna `imageUrl` e `imagePublicId`. POST/PUT de notícias também recebem `imageAlt` e `imageCredit`. O arquivo fica no Cloudinary; esses quatro campos ficam no banco. Omitir os campos na edição preserva a capa; enviar `imageUrl` vazio remove sua associação. As colunas são criadas de forma aditiva, sem apagar notícias anteriores. URLs de imagens são públicas, inclusive para capas de rascunhos.
+
+A integração usa `@fastify/multipart` para receber arquivos e `cloudinary` para enviá-los ao serviço. O editor de texto foi preservado.
+
+## Apresentação do projeto
+
+Veja [o roteiro completo](docs/apresentacao.md), com arquitetura, arquivos, explicação do editor, passo a passo da demonstração, perguntas frequentes e resultados de testes. O histórico de implementação continua em [resumo.txt](resumo.txt).

@@ -40,3 +40,9 @@ Os exercícios demonstram os fundamentos, mas não contêm um portal completo pr
 O useEffect e o GET com Axios de REACT 3 ainda estavam iniciados, sem um fluxo completo. A referência de comunicação HTTP funcional foi o JavaScript comum de frontend/app.js e API/script.js. Axios não foi adicionado, pois fetch já resolve essas chamadas.
 
 As verificações de acesso, validações HTTP e geração segura do identificador de sessão foram mantidas como infraestrutura mínima do login solicitado anteriormente. Não são apresentadas como conteúdo que já estava completo nas aulas. Não foram copiados erros ou credenciais embutidas dos exercícios. Os testes automatizados são ferramentas de verificação do projeto, não funcionalidades adicionais do site.
+
+## Evolução posterior — editor e Cloudinary (26/10/2026)
+
+O mapa acima registra a adaptação original. Depois dele, o trabalho de Henrique acrescentou editor formatado, rascunhos e persistência real em SQLite/Neon; portanto, a descrição histórica de notícias apenas em memória já não representa a versão atual.
+
+A pedido explícito do usuário, acrescentamos upload de capa com Cloudinary, @fastify/multipart e FormData. Estes são novos recursos estudados para esta etapa, e não recursos que afirmamos ter encontrado completos nos exercícios anteriores. A organização routes/controller/repository foi preservada. Consulte docs/apresentacao.md para a arquitetura atual.

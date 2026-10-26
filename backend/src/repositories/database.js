@@ -6,7 +6,6 @@ export function createDatabaseClient() {
     throw new Error('DATABASE_URL não configurada. Preencha backend/.env.');
   }
 
-  return neon(process.env.DATABASE_URL, {
-    fetchOptions: { signal: AbortSignal.timeout(15000) },
-  });
+  // O cliente é reutilizado: não criar um AbortSignal que vence uma única vez.
+  return neon(process.env.DATABASE_URL);
 }

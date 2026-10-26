@@ -38,6 +38,12 @@ export default function Noticia() {
             <p className="byline">
               Por <strong>{noticia.author}</strong> · {new Date(noticia.createdAt).toLocaleDateString('pt-BR')}
             </p>
+            {noticia.imageUrl && (
+              <figure className="article-cover">
+                <img src={noticia.imageUrl} alt={noticia.imageAlt || noticia.title} />
+                {noticia.imageCredit && <figcaption>Foto: {noticia.imageCredit}</figcaption>}
+              </figure>
+            )}
             <TextView content={noticia.content} />
           </>
         )}

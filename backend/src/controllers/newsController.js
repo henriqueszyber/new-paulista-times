@@ -1,3 +1,4 @@
+import { readImageValues } from '../images.js';
 import newsRepository from '../repositories/newsRepository.js';
 import { normalizeDocument, documentHasText } from '../content.js';
 
@@ -5,7 +6,7 @@ function canEdit(user, item) {
   return user && (user.id === item.authorId || user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');
 }
 
-function readValues(body) {
+function readValues(body, previous) {
   const values = {};
   for (const [field, limit] of Object.entries({ title: 160, summary: 300, category: 50 })) {
     const value = body?.[field];
@@ -20,6 +21,12 @@ function readValues(body) {
   if (values.status === 'published' && (!values.summary || !documentHasText(values.content))) {
     return { error: 'Para publicar, preencha resumo e conteúdo.' };
   }
+  const image = readImageValues(body, previous);
+  if (image.error) return { error: image.error };
+  values.imageUrl = image.values.imageUrl;
+  values.imagePublicId = image.values.imagePublicId;
+  values.imageAlt = image.values.imageAlt;
+  values.imageCredit = image.values.imageCredit;
   return { values };
 }
 
@@ -57,7 +64,7 @@ const newsController = {
     const item = await newsRepository.findById(req.params.id);
     if (!item) return reply.code(404).send({ message: 'Notícia não encontrada.' });
     if (!canEdit(req.user, item)) return reply.code(403).send({ message: 'Você não pode editar esta notícia.' });
-    const { values, error } = readValues(req.body);
+    const { values, error } = readValues(req.body, item);
     if (error) return reply.code(400).send({ message: error });
     return newsRepository.update(item.id, values);
   },

@@ -71,6 +71,7 @@ test('editorial: rascunhos, publicação, permissões e persistência em SQLite'
     assert.equal((await request('/news/manage', 'GET', undefined, writerToken)).status, 401);
   } finally {
     await app.close();
+    assert.ok(directory.startsWith(join(tmpdir(), 'paulista-news-test-')));
     rmSync(directory, { recursive: true, force: true });
     delete process.env.NEWS_DB_PATH;
   }

@@ -17,6 +17,8 @@ function mapRow(row) {
     category: row.category, content: typeof row.content_json === 'string' ? JSON.parse(row.content_json) : row.content_json,
     status: row.status, authorId: row.author_id, author: row.author,
     createdAt: row.created_at, updatedAt: row.updated_at,
+    imageUrl: row.image_url || '', imagePublicId: row.image_public_id || '',
+    imageAlt: row.image_alt || '', imageCredit: row.image_credit || '',
   };
 }
 
@@ -37,6 +39,11 @@ function createSqliteStore(path) {
     author_id TEXT NOT NULL, author TEXT NOT NULL,
     created_at TEXT NOT NULL, updated_at TEXT NOT NULL
   )`);
+  // Acrescenta as colunas sem apagar notícias que já existem.
+  const columns = db.prepare('PRAGMA table_info(news)').all();
+  for (const name of ['image_url', 'image_public_id', 'image_alt', 'image_credit']) {
+    if (!columns.some(column => column.name === name)) db.exec(`ALTER TABLE news ADD COLUMN ${name} TEXT NOT NULL DEFAULT ''`);
+  }
   const seed = db.prepare(`INSERT OR IGNORE INTO news
     (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
@@ -44,6 +51,7 @@ function createSqliteStore(path) {
 
   return {
     mode: 'sqlite',
+    close() { db.close(); },
     async findAll(includeDrafts = false) {
       const query = includeDrafts
         ? 'SELECT * FROM news ORDER BY updated_at DESC'
@@ -55,16 +63,16 @@ function createSqliteStore(path) {
       const id = randomUUID();
       const now = new Date().toISOString();
       db.prepare(`INSERT INTO news
-        (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+        (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at, image_url, image_public_id, image_alt, image_credit)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)` )
         .run(id, values.title, values.summary, values.category, JSON.stringify(values.content), values.status,
-          values.authorId, values.author, now, now);
+          values.authorId, values.author, now, now, values.imageUrl, values.imagePublicId, values.imageAlt, values.imageCredit);
       return this.findById(id);
     },
     async update(id, values) {
       const now = new Date().toISOString();
-      db.prepare(`UPDATE news SET title = ?, summary = ?, category = ?, content_json = ?, status = ?, updated_at = ? WHERE id = ?`)
-        .run(values.title, values.summary, values.category, JSON.stringify(values.content), values.status, now, id);
+      db.prepare(`UPDATE news SET title = ?, summary = ?, category = ?, content_json = ?, status = ?, updated_at = ?, image_url = ?, image_public_id = ?, image_alt = ?, image_credit = ? WHERE id = ?`)
+        .run(values.title, values.summary, values.category, JSON.stringify(values.content), values.status, now, values.imageUrl, values.imagePublicId, values.imageAlt, values.imageCredit, id);
       return this.findById(id);
     },
   };
@@ -79,6 +87,12 @@ async function createNeonStore() {
     author_id TEXT NOT NULL, author TEXT NOT NULL,
     created_at TIMESTAMPTZ NOT NULL, updated_at TIMESTAMPTZ NOT NULL
   )`;
+  // Migração aditiva e repetível no Neon.
+  await sql`ALTER TABLE news
+    ADD COLUMN IF NOT EXISTS image_url TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS image_public_id TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS image_alt TEXT NOT NULL DEFAULT '',
+    ADD COLUMN IF NOT EXISTS image_credit TEXT NOT NULL DEFAULT ''`;
   for (const item of initialNews) {
     const [id, title, summary, category, content, status, authorId, author, createdAt, updatedAt] = seedValues(item);
     await sql`INSERT INTO news (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
@@ -99,15 +113,16 @@ async function createNeonStore() {
       const id = randomUUID();
       const content = JSON.stringify(values.content);
       const now = new Date().toISOString();
-      await sql`INSERT INTO news (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
-        VALUES (${id}, ${values.title}, ${values.summary}, ${values.category}, ${content}::jsonb, ${values.status}, ${values.authorId}, ${values.author}, ${now}, ${now})`;
+      await sql`INSERT INTO news (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at, image_url, image_public_id, image_alt, image_credit)
+        VALUES (${id}, ${values.title}, ${values.summary}, ${values.category}, ${content}::jsonb, ${values.status}, ${values.authorId}, ${values.author}, ${now}, ${now}, ${values.imageUrl}, ${values.imagePublicId}, ${values.imageAlt}, ${values.imageCredit})`;
       return this.findById(id);
     },
     async update(id, values) {
       const content = JSON.stringify(values.content);
       const now = new Date().toISOString();
       await sql`UPDATE news SET title = ${values.title}, summary = ${values.summary}, category = ${values.category},
-        content_json = ${content}::jsonb, status = ${values.status}, updated_at = ${now} WHERE id = ${id}`;
+        content_json = ${content}::jsonb, status = ${values.status}, updated_at = ${now},
+        image_url = ${values.imageUrl}, image_public_id = ${values.imagePublicId}, image_alt = ${values.imageAlt}, image_credit = ${values.imageCredit} WHERE id = ${id}`;
       return this.findById(id);
     },
   };
@@ -123,6 +138,13 @@ async function getStore() {
 }
 
 const newsRepository = {
+  async close() {
+    if (store) {
+      const current = await store;
+      if (current.close) current.close();
+      store = undefined;
+    }
+  },
   async init() { return (await getStore()).mode; },
   async findAll(includeDrafts) { return (await getStore()).findAll(includeDrafts); },
   async findById(id) { return (await getStore()).findById(id); },

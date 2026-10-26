@@ -9,7 +9,10 @@ export async function api(caminho, opcoes = {}) {
     configuracao.headers.Authorization = 'Bearer ' + opcoes.token;
   }
 
-  if (opcoes.body) {
+  if (opcoes.body instanceof FormData) {
+    // O navegador define o Content-Type e o separador das partes do arquivo.
+    configuracao.body = opcoes.body;
+  } else if (opcoes.body) {
     configuracao.headers['Content-Type'] = 'application/json';
     configuracao.body = JSON.stringify(opcoes.body);
   }
