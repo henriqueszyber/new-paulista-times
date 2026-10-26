@@ -165,3 +165,10 @@ Etapa 18 — Material para apresentação
 - Criado docs/apresentacao.md: fluxo completo, responsabilidades por arquivo, editor do Henrique, dados no banco, login, demonstração de 6–8 minutos, perguntas frequentes e fala para ensaio.
 - Atualizados README.md e docs/recursos-do-curso.md para refletir persistência e upload atuais.
 - Credenciais permanecem exclusivamente no .env local, ignorado pelo Git.
+
+Etapa 19 — Repositório atualizado
+- git fetch origin confirmou ausência de commits novos do colega antes do envio.
+- git diff --check passou; 23 arquivos preparados foram conferidos contra os valores reais do .env sem imprimir segredos. Nenhum encontrado. .env e backend/data continuam ignorados.
+- git commit criou e52e60d (Integra capas com Cloudinary e documenta a apresentação).
+- git push origin main: SUCESSO, 96bdc27..e52e60d no repositório privado existente.
+- Este registro final é salvo em um commit adicional de documentação.
