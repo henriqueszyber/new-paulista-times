@@ -1,3 +1,4 @@
+import sportsRoutes from './routes/sportsRoutes.js';
 import Fastify from 'fastify';
 import multipart from '@fastify/multipart';
 import imageRoutes from './routes/imageRoutes.js';
@@ -15,6 +16,7 @@ export function createApp() {
   app.addHook('onClose', async () => { await newsRepository.close(); });
 
   app.register(multipart);
+  app.register(sportsRoutes, { prefix: '/api/sports' });
   app.register(imageRoutes, { prefix: '/api/images' });
   app.register(healthRoutes, { prefix: '/api/health' });
   app.register(newsRoutes, { prefix: '/api/news' });

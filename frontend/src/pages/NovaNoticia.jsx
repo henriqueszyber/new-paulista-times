@@ -144,6 +144,7 @@ export default function NovaNoticia() {
             <select id="categoria" value={categoria} onChange={event => { setCategoria(event.target.value); marcarAlteracao(); }}>
               <option>Cidade</option><option>Tecnologia</option><option>Cultura</option>
               <option>Educação</option><option>Esportes</option>
+              <option>Economia</option><option>São Paulo</option>
             </select>
 
             <fieldset className="cover-field">
