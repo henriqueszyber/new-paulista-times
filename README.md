@@ -103,3 +103,45 @@ A integração usa `@fastify/multipart` para receber arquivos e `cloudinary` par
 ## Apresentação do projeto
 
 Veja [o roteiro completo](docs/apresentacao.md), com arquitetura, arquivos, explicação do editor, passo a passo da demonstração, perguntas frequentes e resultados de testes. O histórico de implementação continua em [resumo.txt](resumo.txt).
+
+## Esportes: Brasileirão Série A
+
+A página inicial mostra os cinco primeiros colocados e o próximo jogo agendado; `/esportes` e `/embed/brasileirao` exibem a classificação completa com escudos. A integração usa dados reais da **football-data.org**. O [plano gratuito](https://www.football-data.org/pricing) inclui tabelas e 10 chamadas por minuto; a [cobertura](https://www.football-data.org/coverage) inclui a Série A brasileira. Os dados podem apresentar atraso.
+
+1. Crie uma conta em https://www.football-data.org/client/register e obtenha o token.
+2. Adicione `FOOTBALL_DATA_API_TOKEN=seu_token` ao `backend/.env`, preservando as configurações existentes.
+3. Reinicie o backend e abra `/esportes`.
+
+O endpoint público `GET /api/sports/brasileirao` consulta `https://api.football-data.org/v4/competitions/BSA/standings` com `X-Auth-Token` somente no servidor. Usa a temporada atual retornada pelo provedor, cache em memória de 15 minutos por processo e uma única consulta para requisições simultâneas. Falhas têm intervalo de um minuto antes de nova consulta. Sem token ou quando a API falha, retorna 503 com uma mensagem amigável. Não há dados fictícios como substituição. A interface consulta ao abrir a página ou tentar novamente; recarregue para buscar atualizações.
+
+Para incorporar a tabela em outra página, use a rota sem cabeçalho e rodapé (substitua o domínio pelo endereço publicado do frontend):
+
+```html
+<iframe
+  src="https://SEU-DOMINIO/embed/brasileirao"
+  title="Classificação do Brasileirão Série A"
+  width="100%"
+  height="1500"
+  style="border: 0"
+  loading="lazy"
+></iframe>
+```
+
+A altura pode ser ajustada; tabelas maiores continuam acessíveis pela rolagem. Em produção, configure fallback das rotas do frontend para `index.html` e encaminhe `/api` para o backend, como já ocorre no proxy do Vite. O host deve permitir iframe nos domínios desejados. A chave nunca deve ser colocada no HTML, na URL do iframe ou em variáveis `VITE_*`.
+
+### Jogos da semana
+
+Após as notícias e a classificação, o calendário de `/esportes` mostra partidas do Brasileirão de segunda a domingo da semana atual, no fuso `America/Sao_Paulo`. Inclui jogos agendados, encerrados e outros estados informados pelo provedor, agrupados por dia, com escudos e placares quando disponíveis. Horários ainda não definidos aparecem como “Horário a confirmar”.
+
+`GET /api/sports/brasileirao/jogos` usa o mesmo token, consulta `/v4/competitions/BSA/matches` por intervalo de datas e filtra a semana no horário de Brasília. O cache dura 15 minutos e é invalidado na mudança de semana. Não há atualização em tempo real; recarregue a página para consultar novamente. Sem partidas, há uma mensagem própria; falhas permitem tentar novamente.
+
+
+### Notícias, navegação e página inicial
+
+A página de esportes apresenta notícias publicadas na categoria `Esportes`, com uma principal e até duas secundárias em destaque, seguida da classificação e dos jogos em colunas horizontais por dia. Os atalhos Notícias, Classificação e Jogos aguardam o carregamento dos blocos para posicionar a página corretamente. O botão “Exibir mais” do resumo na página inicial leva a `/esportes#brasileirao`.
+
+`GET /api/sports/brasileirao/proximo-jogo` seleciona o próximo confronto futuro com status `SCHEDULED` ou `TIMED` da temporada atual, sem limitar a consulta à semana. Usa o mesmo cache de 15 minutos e retorna `match: null` quando não há próximo confronto disponível.
+
+A navbar centralizada contém Início, Esportes, Economia e São Paulo (com coração da Lucide). O acesso editorial fica acima do logo. `/economia` lista a categoria Economia; `/sao-paulo` reúne São Paulo e Cidade. As novas categorias estão disponíveis no editor. O favicon SVG fica em `frontend/public/favicon.svg`.
+
+O seed inclui oito notícias fictícias de esportes, identificadas como demonstração e com IDs fixos para evitar duplicação. Os antigos exemplos da categoria singular `Esporte` foram removidos do seed; a exclusão já realizada no SQLite local não é uma migração automática para bancos existentes em outros ambientes.

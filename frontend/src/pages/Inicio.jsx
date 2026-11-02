@@ -1,3 +1,4 @@
+import ResumoEsportes from '../components/ResumoEsportes.jsx';
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout.jsx';
 import CardNoticia from '../components/CardNoticia.jsx';
@@ -7,7 +8,7 @@ import { api } from '../api.js';
 export default function Inicio() {
   const [noticias, setNoticias] = useState([]);
   const [categoria, setCategoria] = useState('Todas');
-  const [limite, setLimite] = useState(7);
+  const [limite, setLimite] = useState(5);
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
 
@@ -47,6 +48,8 @@ export default function Inicio() {
     }
   }
 
+  const noticiasEconomia = noticias.filter((noticia) => noticia.category?.trim().toLocaleLowerCase('pt-BR') === 'economia');
+
   const botoes = [];
   for (let i = 0; i < categorias.length; i++) {
     const nome = categorias[i];
@@ -62,11 +65,6 @@ export default function Inicio() {
 
   return (
     <Layout>
-      <section className="intro">
-        <p className="eyebrow">CIDADE, CULTURA E IDEIAS</p>
-        <h1>Histórias de perto.<br /><em>Perspectivas que vão longe.</em></h1>
-        <p>Um espaço para descobrir a cidade, acompanhar novas ideias e contar o que acontece ao nosso redor.</p>
-      </section>
       <NoticiasPrincipais noticias={noticias} />
       <section aria-labelledby="ultimas-noticias">
         <div className="section-heading">
@@ -85,6 +83,25 @@ export default function Inicio() {
           </div>
         )}
         {!carregando && !erro && cards.length === 0 && <p>Nenhuma notícia nesta categoria.</p>}
+      </section>
+      <section className="home-section" aria-labelledby="esportes">
+        <div className="section-heading">
+          <h2 id="esportes">Esportes</h2>
+          <span>O futebol dentro e fora de campo</span>
+        </div>
+        <ResumoEsportes />
+      </section>
+      <section className="home-section" aria-labelledby="economia">
+        <div className="section-heading">
+          <h2 id="economia">Economia</h2>
+          <span>Negócios, mercados e o seu dia a dia</span>
+        </div>
+        {carregando && <p role="status">Carregando notícias de economia…</p>}
+        {erro && <p className="notice" role="alert">Não foi possível carregar as notícias de economia.</p>}
+        <div className="news-list">
+          {noticiasEconomia.map((noticia) => <CardNoticia key={noticia.id} noticia={noticia} />)}
+        </div>
+        {!carregando && !erro && noticiasEconomia.length === 0 && <p>Ainda não há notícias de economia publicadas.</p>}
       </section>
     </Layout>
   );

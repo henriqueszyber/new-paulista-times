@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
+import { Heart } from 'lucide-react';
 import { api } from '../api.js';
 import { sessao } from '../session.js';
 
@@ -26,15 +27,21 @@ export default function Layout({ children, editorial = false }) {
       <header className="site-header">
         <div className="topline">
           <span>JYNX · JORNAL DO PROJETO</span>
-          <span>EDIÇÃO EXPERIMENTAL</span>
+          <div className="topline-actions">
+            <span>EDIÇÃO EXPERIMENTAL</span>
+            <Link className="editorial-login" to="/login">Área editorial <span aria-hidden="true">↗</span></Link>
+          </div>
         </div>
         <Link className="brand" to="/" aria-label="New Paulista Times — página inicial">
           <img src="/logo-new-paulista-times.png" alt="New Paulista Times" />
         </Link>
         <nav className="main-nav" aria-label="Navegação principal">
-          <Link to="/">Início</Link>
-          <span>Um olhar próximo. Novas histórias.</span>
-          <Link to="/login">Área editorial <span aria-hidden="true">↗</span></Link>
+          <div className="main-nav-sections">
+            <NavLink to="/" end>Início</NavLink>
+            <NavLink to="/esportes">Esportes</NavLink>
+            <NavLink to="/economia">Economia</NavLink>
+            <NavLink to="/sao-paulo">São Paulo <Heart className="nav-heart" size={16} fill="currentColor" aria-hidden="true" /></NavLink>
+          </div>
         </nav>
       </header>
 

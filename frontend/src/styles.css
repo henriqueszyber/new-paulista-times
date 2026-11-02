@@ -58,6 +58,9 @@ button:disabled {
 
 .topline {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
   justify-content: space-between;
   padding-top: 16px;
   color: #646464;
@@ -79,19 +82,13 @@ button:disabled {
 
 .main-nav {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 16px;
   border-top: 3px solid #191919;
   border-bottom: 1px solid #191919;
   padding: 11px 0;
   font-size: 13px;
-}
-
-.main-nav > span {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-style: italic;
-  color: #6b6b6b;
 }
 
 .main-nav a {
@@ -627,9 +624,6 @@ td a:hover {
     font-size: 12px;
   }
 
-  .main-nav > span {
-    display: none;
-  }
 
   main {
     padding-top: 24px;
@@ -816,3 +810,75 @@ td a:hover {
   .news-list-content .card-summary { font-size: 13px; margin-bottom: 16px; }
   .news-list-content .card-bottom { flex-wrap: wrap; gap: 8px; }
 }
+
+/* Tabela incorporada de esportes. */
+.sports-table { margin-top: 40px; border-top: 3px solid #202020; padding-top: 24px; }
+.sports-table table { min-width: 680px; font-variant-numeric: tabular-nums; }
+.sports-table caption { text-align: left; padding-bottom: 16px; color: #626262; font-size: 12px; }
+.sports-table td, .sports-table thead th { text-align: center; }
+.sports-table th:nth-child(2) { text-align: left; }
+.sports-table tbody th { color: #202020; text-transform: none; font-size: 13px; letter-spacing: 0; }
+.sports-table tbody tr:hover { background: #faf9f7; }
+.sports-points { font-weight: 700; background: #f5f4f1; }
+.sports-note { font-size: 12px; color: #626262; }
+.sports-note a { text-decoration: underline; }
+.sports-embed { min-height: 0; padding: 16px 0; }
+.sports-embed .sports-table { margin-top: 0; }
+
+.sports-club { display: flex; align-items: center; gap: 10px; }
+.sports-crest { flex: 0 0 28px; width: 28px; height: 28px; object-fit: contain; }
+
+/* Editorias da página inicial; Brasileirão é uma subseção de Esportes. */
+.home-section { margin-top: 48px; padding-top: 24px; border-top: 3px solid #202020; }
+.home-section > .sports-table { margin-top: 24px; border-top: 1px solid #d6d6d6; }
+.sports-table .section-heading h3 { margin: 0; font-size: 24px; }
+
+.weekly-matches { border-top: 3px solid #202020; padding-top: 24px; }
+.matches-board { display: flex; align-items: stretch; gap: 18px; overflow-x: auto; padding: 4px 4px 18px; scroll-snap-type: x proximity; }
+.matches-board:focus-visible { outline: 3px solid #b82127; outline-offset: 4px; }
+.match-day { flex: 0 0 min(320px, 85vw); min-width: 0; margin: 0; padding: 16px; background: #f5f4f1; border-top: 3px solid #202020; scroll-snap-align: start; }
+.match-day h3 { font-size: 18px; text-transform: capitalize; margin: 0 0 18px; min-height: 42px; }
+.match-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.match-card { border: 1px solid #d6d6d6; background: #fff; padding: 18px; min-width: 0; }
+.match-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 11px; color: #626262; margin-bottom: 18px; }
+.match-teams { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 12px 0; font-size: 14px; }
+.match-time { border-top: 1px solid #e1e1e1; padding-top: 12px; margin-bottom: 0; font-size: 12px; color: #626262; }
+
+.sports-summary { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 32px; }
+.sports-summary > section { min-width: 0; }
+.sports-summary h3 { margin: 0 0 20px; font-size: 24px; }
+.sports-top-five tbody th { color: #202020; text-transform: none; letter-spacing: 0; font-size: 13px; }
+.sports-top-five th, .sports-top-five td { padding: 12px 8px; }
+.sports-top-five td:last-child, .sports-top-five thead th:last-child { text-align: right; }
+.sports-next-match { border-left: 1px solid #d6d6d6; padding-left: 32px; }
+.sports-next-date { text-transform: capitalize; font-size: 14px; }
+.sports-next-teams { display: flex; flex-direction: column; gap: 12px; padding: 12px 0; font-weight: 700; }
+.sports-versus { color: #777; font-weight: 400; padding-left: 8px; }
+@media (max-width: 700px) {
+  .sports-summary { grid-template-columns: minmax(0, 1fr); }
+  .sports-next-match { border-left: 0; padding-left: 0; }
+}
+
+.brasileirao-anchor { display: flow-root; scroll-margin-top: 24px; overflow-anchor: none; }
+
+.sports-section-nav { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 32px; }
+.sports-section-nav a { border: 1px solid #d6d6d6; padding: 8px 16px; font-size: 13px; font-weight: 700; }
+.sports-section-nav a:hover { border-color: #b51d24; }
+.sports-news, .sports-games-anchor { scroll-margin-top: 24px; overflow-anchor: none; }
+.sports-games-anchor { margin-top: 40px; display: flow-root; }
+.sports-single-highlight { grid-template-columns: minmax(0, 1fr); }
+.sports-more-news:not(:empty) { margin-top: 28px; }
+
+.main-nav-sections { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 24px; }
+.main-nav-sections a { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.main-nav-sections a[aria-current="page"] { color: #c6262a; }
+.nav-heart { color: #c6262a; flex-shrink: 0; }
+@media (max-width: 560px) {
+  .main-nav { flex-wrap: wrap; gap: 12px; }
+  .main-nav-sections { width: 100%; gap: 16px; }
+}
+
+.topline-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 16px; margin-left: auto; }
+.editorial-login { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #202020; padding: 7px 12px; color: #202020; font-size: 11px; font-weight: 700; letter-spacing: 0; }
+.editorial-login:hover { background: #202020; color: #fff; }
+@media (max-width: 560px) { .topline-actions { gap: 10px; } }
