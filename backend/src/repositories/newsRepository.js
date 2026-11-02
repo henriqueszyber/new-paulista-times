@@ -25,7 +25,7 @@ function mapRow(row) {
 function seedValues(item) {
   return [item.id, item.title, item.summary, item.category,
     JSON.stringify(plainTextDocument(item.content)), 'published', item.authorId,
-    item.author, item.createdAt, item.createdAt];
+    item.author, item.createdAt, item.createdAt, item.imageUrl || '', item.imageAlt || '', item.imageCredit || ''];
 }
 
 function createSqliteStore(path) {
@@ -45,8 +45,8 @@ function createSqliteStore(path) {
     if (!columns.some(column => column.name === name)) db.exec(`ALTER TABLE news ADD COLUMN ${name} TEXT NOT NULL DEFAULT ''`);
   }
   const seed = db.prepare(`INSERT OR IGNORE INTO news
-    (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
+    (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at, image_url, image_alt, image_credit)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`);
   for (const item of initialNews) seed.run(...seedValues(item));
 
   return {
@@ -94,9 +94,9 @@ async function createNeonStore() {
     ADD COLUMN IF NOT EXISTS image_alt TEXT NOT NULL DEFAULT '',
     ADD COLUMN IF NOT EXISTS image_credit TEXT NOT NULL DEFAULT ''`;
   for (const item of initialNews) {
-    const [id, title, summary, category, content, status, authorId, author, createdAt, updatedAt] = seedValues(item);
-    await sql`INSERT INTO news (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at)
-      VALUES (${id}, ${title}, ${summary}, ${category}, ${content}::jsonb, ${status}, ${authorId}, ${author}, ${createdAt}, ${updatedAt})
+    const [id, title, summary, category, content, status, authorId, author, createdAt, updatedAt, imageUrl, imageAlt, imageCredit] = seedValues(item);
+    await sql`INSERT INTO news (id, title, summary, category, content_json, status, author_id, author, created_at, updated_at, image_url, image_alt, image_credit)
+      VALUES (${id}, ${title}, ${summary}, ${category}, ${content}::jsonb, ${status}, ${authorId}, ${author}, ${createdAt}, ${updatedAt}, ${imageUrl}, ${imageAlt}, ${imageCredit})
       ON CONFLICT (id) DO NOTHING`;
   }
   const mapped = row => row && mapRow({ ...row, created_at: new Date(row.created_at).toISOString(), updated_at: new Date(row.updated_at).toISOString() });

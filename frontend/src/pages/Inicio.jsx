@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout.jsx';
 import CardNoticia from '../components/CardNoticia.jsx';
+import NoticiasPrincipais from '../components/noticias-principais.jsx';
 import { api } from '../api.js';
 
 export default function Inicio() {
   const [noticias, setNoticias] = useState([]);
   const [categoria, setCategoria] = useState('Todas');
+  const [limite, setLimite] = useState(7);
   const [erro, setErro] = useState('');
   const [carregando, setCarregando] = useState(true);
 
@@ -49,7 +51,10 @@ export default function Inicio() {
   for (let i = 0; i < categorias.length; i++) {
     const nome = categorias[i];
     botoes[botoes.length] = (
-      <button key={nome} aria-pressed={categoria === nome} onClick={() => setCategoria(nome)}>
+      <button key={nome} aria-pressed={categoria === nome} onClick={() => {
+        setCategoria(nome);
+        setLimite(7);
+      }}>
         {nome}
       </button>
     );
@@ -62,7 +67,7 @@ export default function Inicio() {
         <h1>Histórias de perto.<br /><em>Perspectivas que vão longe.</em></h1>
         <p>Um espaço para descobrir a cidade, acompanhar novas ideias e contar o que acontece ao nosso redor.</p>
       </section>
-
+      <NoticiasPrincipais noticias={noticias} />
       <section aria-labelledby="ultimas-noticias">
         <div className="section-heading">
           <h2 id="ultimas-noticias">Últimas notícias</h2>
@@ -71,7 +76,14 @@ export default function Inicio() {
         <div className="filters" aria-label="Filtrar por categoria">{botoes}</div>
         {erro && <p className="notice" role="alert">{erro}</p>}
         {carregando && <p role="status">Carregando notícias…</p>}
-        <div className="news-grid">{cards}</div>
+        <div className="news-list" id="lista-ultimas-noticias">{cards.slice(0, limite)}</div>
+        {cards.length > limite && (
+          <div className="news-load-more">
+            <button className="button" aria-controls="lista-ultimas-noticias" onClick={() => setLimite((atual) => atual + 7)}>
+              Exibir mais
+            </button>
+          </div>
+        )}
         {!carregando && !erro && cards.length === 0 && <p>Nenhuma notícia nesta categoria.</p>}
       </section>
     </Layout>

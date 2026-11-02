@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { createApp } from '../src/app.js';
+import { initialNews } from '../src/data.js';
 
 test('editorial: rascunhos, publicação, permissões e persistência em SQLite', async () => {
   const directory = mkdtempSync(join(tmpdir(), 'paulista-news-test-'));
@@ -28,7 +29,7 @@ test('editorial: rascunhos, publicação, permissões e persistência em SQLite'
   ] };
   try {
     assert.equal((await request('/health')).data.status, 'ok');
-    assert.equal((await request('/news')).data.length, 3);
+    assert.equal((await request('/news')).data.length, initialNews.length);
     assert.equal((await request('/news/manage')).status, 401);
     assert.equal((await request('/news/1')).status, 200);
     assert.equal((await request('/news/inexistente')).status, 404);
@@ -54,7 +55,7 @@ test('editorial: rascunhos, publicação, permissões e persistência em SQLite'
     assert.equal((await request('/news/' + created.data.id, 'PUT', { ...published, content: { type: 'doc', blocks: [{ type: 'paragraph', spans: [{ text: 'x', href: 'javascript:alert(1)' }] }] } }, writerToken)).status, 400);
     assert.equal((await request('/news/' + created.data.id, 'PUT', published, writerToken)).status, 200);
     assert.equal((await request('/news/' + created.data.id)).status, 200);
-    assert.equal((await request('/news')).data.length, 4);
+    assert.equal((await request('/news')).data.length, initialNews.length + 1);
 
     const other = await request('/news', 'POST', { ...draft, title: 'Outro rascunho' }, adminToken);
     assert.equal((await request('/news/manage', 'GET', undefined, writerToken)).data.some(item => item.id === other.data.id), false);
