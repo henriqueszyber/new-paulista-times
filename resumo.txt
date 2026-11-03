@@ -186,3 +186,10 @@ Etapa 20 — Resolução do merge com o trabalho do colega (03/11/2026)
 - Identificado e-mail inicial antigo super@jynx.local em Login.jsx; consultado usuário antes de alterar. IDs/autoria histórica não migrados nesta resolução.
 - Usuário pediu retirar o e-mail automático: estado inicial de email em Login.jsx alterado para string vazia. Senha demonstrativa e lista de contas preservadas.
 - Preparado commit de merge local unindo ambos os históricos, sem reescrever commits. Envio ao GitHub depende da próxima escolha do usuário, conforme acompanhamento solicitado.
+
+Etapa 21 — Envio do merge ao GitHub (03/11/2026)
+- Usuário autorizou enviar a versão combinada à main.
+- git fetch origin confirmou que o remoto não tinha novos commits além dos já incorporados.
+- git push origin main: sucesso, e659013..f97c5da.
+- git ls-remote confirmou f97c5daf8d7261f8e12b6eea04956c15d3a8da33 na main remota, igual ao commit local do merge.
+- Nenhum push forçado utilizado; ambos os históricos preservados. Este registro segue em commit adicional de documentação.
