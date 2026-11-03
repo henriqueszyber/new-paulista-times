@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import CotacaoDolar from '../components/economia/CotacaoDolar.jsx';
 import MaioresAltas from '../components/economia/MaioresAltas.jsx';
 import ResumoEsportes from '../components/ResumoEsportes.jsx';
+import LocaisInteresse from '../components/sao-paulo/LocaisInteresse.jsx';
 import React, { useEffect, useState } from 'react';
 import Layout from '../components/Layout.jsx';
 import CardNoticia from '../components/CardNoticia.jsx';
@@ -133,6 +134,12 @@ export default function Inicio() {
           <Link className="button" to="/economia" aria-label="Exibir mais economia">Exibir mais</Link>
         </div>
       </section>
+      <div className="home-section">
+        <LocaisInteresse />
+        <div className="news-load-more">
+          <Link className="button" to="/sao-paulo" aria-label="Exibir mais sobre São Paulo">Exibir mais</Link>
+        </div>
+      </div>
     </Layout>
   );
 }

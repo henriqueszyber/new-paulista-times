@@ -1,3 +1,4 @@
+import { saoPauloNews } from './saoPauloNews.js';
 import { economyDemoNews } from './economyDemoNews.js';
 import { sportsDemoNews } from './sportsDemoNews.js';
 
@@ -17,6 +18,7 @@ export const users = [
 ];
 
 export const initialNews = [
+  ...saoPauloNews,
   ...economyDemoNews,
   ...sportsDemoNews,
   { id: '1', title: 'Uma nova praça para encontrar a cidade', summary: 'Espaço reúne áreas verdes, cultura e convivência para a comunidade.', category: 'Cidade', content: 'Esta é uma notícia fictícia para demonstrar o New Paulista Times.\n\nA nova praça foi pensada como um ponto de encontro para moradores de todas as idades. O projeto inclui jardins, bancos e um espaço para atividades culturais.\n\nAcompanhe o portal para conhecer outras histórias da comunidade.', authorId: '1', author: 'Ana Souza', createdAt: '2026-09-29T12:00:00.000Z' },

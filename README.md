@@ -208,3 +208,11 @@ As notícias de Economia também são blocos independentes em `components/econom
 ### Resumos na página inicial
 
 As seções de Esportes e Economia exibem cinco notícias em dois terços da largura e indicadores no terço restante. Esportes empilha a classificação dos cinco primeiros times e o próximo jogo; Economia empilha as maiores altas e a cotação do dólar. Em telas menores, os blocos ficam em uma coluna. Cada seção termina com um único botão “Exibir mais”, centralizado, que abre o topo da respectiva página. Na página de Esportes, a lista começa com cinco notícias e permite carregar mais cinco por clique.
+
+### Mapa de São Paulo
+
+Em `frontend/.env`, preencha `VITE_GOOGLE_MAPS_API_KEY=` com sua Google Maps Demo Key e reinicie o frontend (`npm run dev:frontend`). O modelo está em `frontend/.env.example`. A chave do SDK é utilizada no navegador; configure as restrições de domínio aplicáveis na conta Google. A Demo Key é destinada a protótipos; para produção, configure uma chave de produção e seu map ID no componente `MapaLocais.jsx`.
+
+A página `/sao-paulo` mostra destaques da categoria São Paulo e os locais persistidos no mesmo banco das notícias (SQLite local ou PostgreSQL/Neon). Notícias de “Cidade” não são automaticamente consideradas da capital. Para incluir uma matéria, selecione “São Paulo” no cadastro editorial.
+
+Durante o beta, qualquer visitante pode usar “Adicionar novo local” diretamente na página, sem login. O cadastro público mantém a validação dos campos na API. Busque o estabelecimento nas sugestões do Google, selecione-o e preencha nome e descrição. O endereço, as coordenadas e o link do Google Maps são preenchidos automaticamente. A busca utiliza Places API (New), que precisa estar disponível para a chave configurada. A lista permanece disponível se o Google Maps estiver indisponível. Como no restante do protótipo, recarregar o navegador exige novo login.
