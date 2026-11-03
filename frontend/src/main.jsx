@@ -1,6 +1,7 @@
-import Editoria from './pages/Editoria.jsx';
+import Economia from './pages/Economia.jsx';
+import SaoPaulo from './pages/SaoPaulo.jsx';
+import BrasileiraoEmbed from './pages/BrasileiraoEmbed.jsx';
 import Esportes from './pages/Esportes.jsx';
-import TabelaBrasileirao from './components/TabelaBrasileirao.jsx';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -17,9 +18,9 @@ import './styles.css';
 const rotas = createBrowserRouter([
   { path: '/', element: <Inicio /> },
   { path: '/esportes', element: <Esportes /> },
-  { path: '/economia', element: <Editoria key="economia" editoria="economia" /> },
-  { path: '/sao-paulo', element: <Editoria key="sao-paulo" editoria="sao-paulo" /> },
-  { path: '/embed/brasileirao', element: <main className="sports-embed"><TabelaBrasileirao /></main> },
+  { path: '/economia', element: <Economia /> },
+  { path: '/sao-paulo', element: <SaoPaulo /> },
+  { path: '/embed/brasileirao', element: <BrasileiraoEmbed /> },
   { path: '/noticia/:id', element: <Noticia /> },
   { path: '/login', element: <Login /> },
   { path: '/admin', element: <Painel /> },

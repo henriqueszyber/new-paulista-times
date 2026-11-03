@@ -754,12 +754,12 @@ td a:hover {
   padding: 32px;
 }
 .noticia-principal h3 { font-size: clamp(28px, 3vw, 40px); }
-.noticias-principais .card-summary {
+.noticias-principais .news-card .card-summary {
   margin-bottom: 0;
   color: #f0f0f0;
 }
-.noticias-principais h3 a:hover { color: #fff; text-decoration: underline; }
-.noticias-principais h3 a:focus-visible { outline-color: #fff; }
+.noticias-principais .news-card h3 a:hover { color: #fff; text-decoration: underline; }
+.noticias-principais .news-card h3 a:focus-visible { outline-color: #fff; }
 .noticias-principais-lateral {
   display: grid;
   grid-auto-rows: minmax(190px, auto);
@@ -882,3 +882,78 @@ td a:hover {
 .editorial-login { display: inline-flex; align-items: center; gap: 8px; border: 1px solid #202020; padding: 7px 12px; color: #202020; font-size: 11px; font-weight: 700; letter-spacing: 0; }
 .editorial-login:hover { background: #202020; color: #fff; }
 @media (max-width: 560px) { .topline-actions { gap: 10px; } }
+
+/* Dados reais da editoria Economia. */
+.market-panel { margin-bottom: 48px; padding-top: 24px; }
+.market-cards { display: flex; align-items: stretch; gap: 20px; }
+.market-cards > * { flex: 1 1 0; min-width: 0; }
+.market-card { border: 1px solid #d6d6d6; padding: 22px; min-width: 0; }
+.market-card h3, .market-history h3 { margin: 0 0 10px; font-size: 23px; }
+.market-muted, .market-source { color: #626262; font-size: 12px; line-height: 1.6; }
+.market-source a { text-decoration: underline; }
+.market-source { margin-top: 18px; }
+.market-loading { color: #626262; min-height: 90px; }
+.market-stocks, .market-crypto { list-style: none; margin: 22px 0; padding: 0; }
+.market-stocks li, .market-crypto li { border-bottom: 1px solid #e1e1e1; padding: 12px 0; }
+.market-stocks li, .market-crypto-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; font-size: 14px; }
+.market-stock-name { display: block; font-size: 11px; color: #626262; overflow-wrap: anywhere; }
+.market-values { display: flex; flex-direction: column; text-align: right; flex-shrink: 0; font-variant-numeric: tabular-nums; }
+.market-change { font-size: 13px; font-weight: 700; }
+.market-up { color: #23613e; }
+.market-down { color: #b51d24; }
+.market-crypto small { display: block; color: #626262; margin-top: 5px; font-size: 10px; }
+.market-dollar { margin: 28px 0 18px; }
+.market-dollar span, .market-dollar strong { display: block; }
+.market-dollar span { color: #626262; font-size: 16px; }
+.market-dollar strong { font-family: Georgia, 'Times New Roman', serif; font-size: clamp(28px, 3vw, 40px); font-variant-numeric: tabular-nums; }
+.market-history { border: 1px solid #d6d6d6; margin-top: 20px; padding: 24px; }
+.market-periods { display: flex; flex-wrap: wrap; gap: 8px; }
+.market-periods button { padding: 7px 12px; border: 1px solid #d6d6d6; background: #fff; font-size: 12px; }
+.market-periods button[aria-pressed=true] { color: #fff; background: #202020; border-color: #202020; }
+.market-chart { display: block; width: 100%; height: auto; max-height: 320px; }
+.market-chart text { font-family: Arial, sans-serif; fill: #626262; font-size: 12px; }
+.market-chart-grid { stroke: #e4e4e4; }
+.market-chart-line { stroke: #b51d24; stroke-width: 2.5; stroke-linejoin: round; }
+.market-chart-cursor { stroke: #999; stroke-dasharray: 4 4; }
+.market-chart-point { fill: #b51d24; stroke: white; stroke-width: 2; }
+.market-chart-readout { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; }
+.market-chart-readout strong { font-size: 24px; font-family: Georgia, serif; }
+.market-chart-readout span { color: #626262; font-size: 12px; }
+.market-chart-slider { display: block; font-size: 12px; }
+.market-chart-slider input { display: block; padding: 0; accent-color: #b51d24; margin: 12px 0; }
+.market-chart-table summary { cursor: pointer; font-size: 12px; text-decoration: underline; }
+.market-chart-table .table-wrap { max-height: 280px; overflow: auto; margin-top: 12px; }
+.market-chart-table th { letter-spacing: 0; }
+@media (max-width: 1000px) { .market-cards { flex-direction: column; } }
+@media (max-width: 560px) { .market-card, .market-history { padding: 18px; } }
+
+/* A página controla o espaçamento entre blocos independentes da editoria. */
+.economy-page { display: flex; flex-direction: column; align-items: stretch; gap: 40px; }
+.economy-page > * { width: 100%; min-width: 0; }
+.economy-page > .economy-news-highlights > .noticias-principais { margin-bottom: 0; }
+.economy-page > .market-panel { margin: 0; padding-top: 0; }
+.economy-page > .economy-latest-news { margin: 0; }
+.economy-page > .market-cards > .market-card { display: flex; flex-direction: column; }
+.economy-page > .market-cards > .market-card > .market-source { margin-top: auto; padding-top: 18px; }
+@media (max-width: 560px) { .economy-page { gap: 28px; } }
+
+/* Economia na página inicial: notícias em 2/3 e mercado em 1/3. */
+.home-economy-layout, .home-sports-layout { display: flex; align-items: flex-start; gap: 28px; }
+.home-economy-news, .home-sports-news { flex: 2 1 0; min-width: 0; }
+.home-economy-market, .home-sports-sidebar { flex: 1 1 0; min-width: 0; }
+.home-economy-news .news-list-content h3, .home-sports-news .news-list-content h3 { font-size: 24px; }
+.home-economy-news .card-bottom, .home-sports-news .card-bottom { flex-wrap: wrap; }
+@media (max-width: 900px) {
+  .home-economy-layout, .home-sports-layout { flex-direction: column; }
+  .home-economy-news, .home-economy-market, .home-sports-news, .home-sports-sidebar { flex: auto; width: 100%; }
+}
+@media (max-width: 560px) { .home-economy-news .news-list-content h3, .home-sports-news .news-list-content h3 { font-size: 21px; } }
+
+/* Colunas laterais das editorias na página inicial. */
+.home-economy-market { display: flex; flex-direction: column; gap: 20px; }
+.home-sports-sidebar .sports-summary { display: flex; flex-direction: column; gap: 20px; }
+.home-sports-sidebar .sports-summary > section { border: 1px solid #d6d6d6; padding: 18px; }
+.home-sports-sidebar .sports-next-match .match-card { border: 0; padding: 0; }
+.home-sports-sidebar .sports-summary h3 { font-size: 23px; }
+.home-sports-sidebar .sports-top-five .sports-club { gap: 6px; }
+.home-sports-sidebar .sports-top-five th, .home-sports-sidebar .sports-top-five td { padding: 12px 5px; }

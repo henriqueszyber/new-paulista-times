@@ -44,14 +44,8 @@ export default function Esportes() {
   }, [hash, key, carregando, tabelaPronta, jogosProntos]);
 
   const [principal, ...secundarias] = noticias.slice(0, 3);
-  const demais = noticias.slice(3);
 
   return <Layout>
-    <section className="intro">
-      <p className="eyebrow">ESPORTES</p>
-      <h1>O campeonato,<br /><em>ponto a ponto.</em></h1>
-      <p>As notícias do esporte, a classificação do Brasileirão e os jogos da semana em um só lugar.</p>
-    </section>
     <nav className="sports-section-nav" aria-label="Seções de esportes">
       <Link to="#noticias">Notícias</Link>
       <Link to="#brasileirao">Classificação</Link>
@@ -73,9 +67,9 @@ export default function Esportes() {
           </div>}
         </div>}
         <div className="news-list sports-more-news" id="mais-noticias-esportes">
-          {demais.slice(0, limite).map((noticia) => <CardNoticia key={noticia.id} noticia={noticia} />)}
+          {noticias.slice(0, limite).map((noticia) => <CardNoticia key={noticia.id} noticia={noticia} />)}
         </div>
-        {demais.length > limite && <div className="news-load-more"><button className="button" aria-controls="mais-noticias-esportes" onClick={() => setLimite((valor) => valor + 5)}>Mais notícias de esportes</button></div>}
+        {noticias.length > limite && <div className="news-load-more"><button className="button" aria-controls="mais-noticias-esportes" onClick={() => setLimite((valor) => valor + 5)}>Exibir mais</button></div>}
       </>}
     </section>
     <div id="brasileirao" ref={tabelaRef} className="brasileirao-anchor">

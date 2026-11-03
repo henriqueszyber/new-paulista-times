@@ -1,3 +1,4 @@
+import { economyDemoNews } from './economyDemoNews.js';
 import { sportsDemoNews } from './sportsDemoNews.js';
 
 // Dados fictícios inseridos ao iniciar o servidor, sem sobrescrever notícias existentes.
@@ -16,6 +17,7 @@ export const users = [
 ];
 
 export const initialNews = [
+  ...economyDemoNews,
   ...sportsDemoNews,
   { id: '1', title: 'Uma nova praça para encontrar a cidade', summary: 'Espaço reúne áreas verdes, cultura e convivência para a comunidade.', category: 'Cidade', content: 'Esta é uma notícia fictícia para demonstrar o New Paulista Times.\n\nA nova praça foi pensada como um ponto de encontro para moradores de todas as idades. O projeto inclui jardins, bancos e um espaço para atividades culturais.\n\nAcompanhe o portal para conhecer outras histórias da comunidade.', authorId: '1', author: 'Ana Souza', createdAt: '2026-09-29T12:00:00.000Z' },
   { id: '2', title: 'Tecnologia que começa na sala de aula', summary: 'Estudantes transformam ideias simples em projetos para o dia a dia.', category: 'Tecnologia', content: 'Conteúdo fictício do protótipo.\n\nUma turma de estudantes criou pequenos projetos de programação para resolver problemas cotidianos. O objetivo é aprender construindo e compartilhar o conhecimento com a comunidade.', authorId: '2', author: 'Bruno Lima', createdAt: '2026-09-28T12:00:00.000Z' },
