@@ -1,3 +1,4 @@
+import placesRoutes from './routes/placesRoutes.js';
 import economyRoutes from './routes/economyRoutes.js';
 import sportsRoutes from './routes/sportsRoutes.js';
 import Fastify from 'fastify';
@@ -21,6 +22,7 @@ export function createApp() {
   app.register(sportsRoutes, { prefix: '/api/sports' });
   app.register(imageRoutes, { prefix: '/api/images' });
   app.register(healthRoutes, { prefix: '/api/health' });
+  app.register(placesRoutes, { prefix: '/api/places' });
   app.register(newsRoutes, { prefix: '/api/news' });
   app.register(authRoutes, { prefix: '/api/auth' });
   app.register(userRoutes, { prefix: '/api/users' });

@@ -23,8 +23,15 @@ function mapRow(row) {
 }
 
 function seedValues(item) {
+  const document = plainTextDocument(item.content);
+  for (const source of item.sources || []) {
+    document.blocks.push({ type: 'paragraph', spans: [
+      { text: 'Fonte consultada em 03/11/2026: ' },
+      { text: source.title, href: source.url },
+    ] });
+  }
   return [item.id, item.title, item.summary, item.category,
-    JSON.stringify(plainTextDocument(item.content)), 'published', item.authorId,
+    JSON.stringify(document), 'published', item.authorId,
     item.author, item.createdAt, item.createdAt, item.imageUrl || '', item.imageAlt || '', item.imageCredit || ''];
 }
 

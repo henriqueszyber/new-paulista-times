@@ -1,7 +1,7 @@
 import React from 'react';
 import CardNoticia from './CardNoticia.jsx';
 
-export default function NoticiasPrincipais({ noticias = [] }) {
+export default function NoticiasPrincipais({ noticias = [], titulo = 'Notícias principais' }) {
   const [principal, ...secundarias] = noticias.slice(0, 4);
 
   if (!principal) return null;
@@ -9,7 +9,7 @@ export default function NoticiasPrincipais({ noticias = [] }) {
   return (
     <section className="noticias-principais" aria-labelledby="noticias-principais-titulo">
       <div className="section-heading">
-        <h2 id="noticias-principais-titulo">Notícias principais</h2>
+        <h2 id="noticias-principais-titulo">{titulo}</h2>
         <span>Em destaque na redação</span>
       </div>
       <div className="noticias-principais-grid">
