@@ -62,7 +62,8 @@ export default function Login() {
         <aside className="demo">
           <h2>Contas de demonstração</h2>
           <p>Senha para todas: <code>demo123</code></p>
-          <p>SUPER_ADMIN: super@jynx.local<br />
+          <p>SUPER_ADMIN 1: bermann@jynx.local<br />
+            SUPER_ADMIN 2: dossantos@jynx.local<br />
             ADMIN: admin@jynx.local<br />
             WRITER: writer@jynx.local</p>
           <p>Ao recarregar a página, faça login novamente.</p>

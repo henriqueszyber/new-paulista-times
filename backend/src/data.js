@@ -1,8 +1,9 @@
 // Dados fictícios: reiniciar o servidor restaura esta lista.
 export const users = [
-  { id: '1', name: 'Ana Souza', email: 'super@jynx.local', role: 'SUPER_ADMIN' },
-  { id: '2', name: 'Bruno Lima', email: 'admin@jynx.local', role: 'ADMIN' },
-  { id: '3', name: 'Clara Santos', email: 'writer@jynx.local', role: 'WRITER' },
+  { id: '1', name: 'Henrique Bermann', email: 'bermann@jynx.local', role: 'SUPER_ADMIN' },
+  { id: '2', name: 'Henrique dos Santos', email: 'dossantos@jynx.local', role: 'SUPER_ADMIN' },
+  { id: '3', name: 'Bruno Lima', email: 'admin@jynx.local', role: 'ADMIN' },
+  { id: '4', name: 'Clara Santos', email: 'writer@jynx.local', role: 'WRITER' },
 ];
 
 export const initialNews = [
