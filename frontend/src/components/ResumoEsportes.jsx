@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 
 function Clube({ team }) {
@@ -49,6 +48,5 @@ export default function ResumoEsportes() {
       </section>
     </div>
     <p className="sports-note">Dados de <a href="https://www.football-data.org/" target="_blank" rel="noreferrer">football-data.org</a> · Atualizações podem apresentar atraso.</p>
-    <div className="news-load-more"><Link className="button" to="/esportes#brasileirao" aria-label="Exibir mais esportes">Exibir mais</Link></div>
   </>;
 }

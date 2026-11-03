@@ -138,10 +138,73 @@ Após as notícias e a classificação, o calendário de `/esportes` mostra part
 
 ### Notícias, navegação e página inicial
 
-A página de esportes apresenta notícias publicadas na categoria `Esportes`, com uma principal e até duas secundárias em destaque, seguida da classificação e dos jogos em colunas horizontais por dia. Os atalhos Notícias, Classificação e Jogos aguardam o carregamento dos blocos para posicionar a página corretamente. O botão “Exibir mais” do resumo na página inicial leva a `/esportes#brasileirao`.
+A página de esportes apresenta notícias publicadas na categoria `Esportes`, com uma principal e até duas secundárias em destaque, seguida da classificação e dos jogos em colunas horizontais por dia. Os atalhos Notícias, Classificação e Jogos aguardam o carregamento dos blocos para posicionar a página corretamente. O botão “Exibir mais” do resumo na página inicial leva a `/esportes`.
 
 `GET /api/sports/brasileirao/proximo-jogo` seleciona o próximo confronto futuro com status `SCHEDULED` ou `TIMED` da temporada atual, sem limitar a consulta à semana. Usa o mesmo cache de 15 minutos e retorna `match: null` quando não há próximo confronto disponível.
 
 A navbar centralizada contém Início, Esportes, Economia e São Paulo (com coração da Lucide). O acesso editorial fica acima do logo. `/economia` lista a categoria Economia; `/sao-paulo` reúne São Paulo e Cidade. As novas categorias estão disponíveis no editor. O favicon SVG fica em `frontend/public/favicon.svg`.
 
 O seed inclui oito notícias fictícias de esportes, identificadas como demonstração e com IDs fixos para evitar duplicação. Os antigos exemplos da categoria singular `Esporte` foram removidos do seed; a exclusão já realizada no SQLite local não é uma migração automática para bancos existentes em outros ambientes.
+
+## Economia: notícias e cotações reais
+
+`/economia` reúne, nesta ordem, notícias principais, cartões de mercado, as cinco últimas notícias da categoria Economia e o histórico do dólar. “Exibir mais” revela até mais cinco por clique. O seed inclui oito matérias fictícias com IDs estáveis; as cotações do painel vêm exclusivamente das APIs externas.
+
+Adicione ao `backend/.env` e reinicie o backend:
+
+```env
+AWESOME_API_KEY=
+COINGECKO_API_KEY=
+```
+
+A chave da AwesomeAPI é opcional; o endpoint público funciona com cache. A CoinGecko exige a chave do plano **Demo**, enviada no header `x-cg-demo-api-key`. Cadastros: https://awesomeapi.com.br/auth/signup e https://www.coingecko.com/en/api/pricing. Nunca use variáveis `VITE_*` para essas chaves. A listagem pública da brapi não exige token.
+
+| Rota pública | Provedor | Cache por processo |
+| --- | --- | --- |
+| `/api/economy/altas` | brapi | 30 minutos |
+| `/api/economy/dolar` | AwesomeAPI | 5 minutos |
+| `/api/economy/dolar/historico?days=30` | AwesomeAPI | 6 horas |
+| `/api/economy/criptos` | CoinGecko Demo | 10 minutos |
+
+O ranking usa a variação percentual fornecida pela brapi, exclui tickers fracionários e ativos sem volume ou sem alta, e exibe até três resultados. A listagem não fornece o horário individual dos preços; a interface distingue horário da consulta e variação disponível, sem afirmar que os dados são de um pregão em andamento. Listagens incompletas são tratadas como indisponíveis.
+
+O dólar usa a cotação comercial de compra (`bid`). O histórico consulta até 180 amostras, remove duplicações por data em Brasília, ordena e filtra períodos de 30, 90 ou 180 dias corridos. A amostra mais recente pode ser parcial; dias sem dados não são inventados. O gráfico inclui seletor de datas por teclado e tabela acessível.
+
+Bitcoin, Ethereum e Solana são consultados juntos, em USD, com variação de 24 horas e horário da cotação. O cache de dez minutos equivale a cerca de 4.320 consultas em 30 dias para um processo continuamente acessado, sem contar reinícios, erros ou outros consumidores. O plano Demo exige atribuição à CoinGecko, presente na interface; confira os termos do provedor antes de uso comercial.
+
+Os quatro blocos carregam independentemente. As chamadas têm timeout de dez segundos, compartilham requisições simultâneas e aguardam um minuto após falhas antes de tentar o provedor novamente. A API retorna 503 em indisponibilidades e 400 para períodos diferentes dos três permitidos. Não há polling automático, dados substitutos fictícios ou registro de chaves nas respostas. Recarregue a página para consultar novamente, respeitando o cache.
+
+
+## Organização das páginas
+
+Todos os componentes usados como páginas pelas rotas ficam em `frontend/src/pages`. `main.jsx` apenas registra essas rotas; a composição visual fica no arquivo da página.
+
+- `Economia.jsx`: notícias principais, cartões de mercado, últimas notícias em grupos de cinco e histórico do dólar.
+- `SaoPaulo.jsx`: apresentação e notícias das categorias São Paulo e Cidade.
+- `Esportes.jsx`: notícias esportivas, classificação e jogos.
+- `BrasileiraoEmbed.jsx`: página da tabela incorporável, sem cabeçalho e rodapé do portal.
+- As páginas inicial, de notícia, login, painel, edição, usuários e não encontrada também permanecem em `pages`.
+
+Blocos reutilizáveis, como `MaioresAltas`, `CotacaoDolar`, `Criptomoedas`, `HistoricoDolar`, `NoticiasPrincipais`, `CardNoticia`, `TabelaBrasileirao` e `Layout`, ficam em `frontend/src/components`. A antiga página genérica `Editoria.jsx` foi substituída por Economia e São Paulo.
+
+
+### Componentes independentes de Economia
+
+A página `frontend/src/pages/Economia.jsx` compõe diretamente os quatro blocos de mercado. Para mover, remover ou reutilizar um bloco, altere seu uso nessa página; cada componente faz sua própria consulta e controla carregamento, erro e nova tentativa.
+
+Arquivos em `frontend/src/components/economia/`:
+
+- `MaioresAltas.jsx`: ranking da B3.
+- `CotacaoDolar.jsx`: cotação comercial USD/BRL.
+- `Criptomoedas.jsx`: Bitcoin, Ethereum e Solana em USD.
+- `HistoricoDolar.jsx`: consulta do histórico e seleção de período; usa `GraficoDolar.jsx` para desenhar o gráfico e a tabela.
+- `useMercado.js`, `formatters.js`, `StatusMercado.jsx`, `VariacaoMercado.jsx` e `FonteMercado.jsx`: utilitários e elementos compartilhados.
+
+Os quatro blocos aceitam `className` para ajustes isolados. `.market-cards` usa Flexbox para manter os três cartões lado a lado e empilhá-los em telas menores; o histórico permanece abaixo. O componente unificado `PainelMercado.jsx` foi removido. Endpoints e caches do backend permanecem iguais.
+
+
+As notícias de Economia também são blocos independentes em `components/economia`: `NoticiasPrincipaisEconomia.jsx` reutiliza o componente de destaques existente; `UltimasNoticiasEconomia.jsx` controla a lista e a paginação de cinco em cinco. Ambos podem ser montados isoladamente e aceitam `className`. `useNoticiasEconomia.js` filtra a categoria e compartilha somente a requisição em andamento para evitar consultas duplicadas na montagem simultânea. Cada bloco mantém seu próprio carregamento, erro e nova tentativa, usando `StatusNoticias.jsx`. A página `Economia.jsx` apenas compõe os blocos e define sua ordem.
+
+### Resumos na página inicial
+
+As seções de Esportes e Economia exibem cinco notícias em dois terços da largura e indicadores no terço restante. Esportes empilha a classificação dos cinco primeiros times e o próximo jogo; Economia empilha as maiores altas e a cotação do dólar. Em telas menores, os blocos ficam em uma coluna. Cada seção termina com um único botão “Exibir mais”, centralizado, que abre o topo da respectiva página. Na página de Esportes, a lista começa com cinco notícias e permite carregar mais cinco por clique.
