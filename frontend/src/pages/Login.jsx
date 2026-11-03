@@ -5,7 +5,7 @@ import { api } from '../api.js';
 import { sessao } from '../session.js';
 
 export default function Login() {
-  const [email, setEmail] = useState('super@jynx.local');
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('demo123');
   const [usuario, setUsuario] = useState(sessao.user);
   const [erro, setErro] = useState('');

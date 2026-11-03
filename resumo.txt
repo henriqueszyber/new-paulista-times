@@ -172,3 +172,17 @@ Etapa 19 — Repositório atualizado
 - git commit criou e52e60d (Integra capas com Cloudinary e documenta a apresentação).
 - git push origin main: SUCESSO, 96bdc27..e52e60d no repositório privado existente.
 - Este registro final é salvo em um commit adicional de documentação.
+
+Etapa 20 — Resolução do merge com o trabalho do colega (03/11/2026)
+- Usuário escolheu manter seus usuários e login e receber o restante do GitHub.
+- Backup anterior em merge-backups/antes-de-sincronizar-2026-11-03T14-50-21-433Z no workspace do chat: histórico Git e cópia dos arquivos versionados.
+- Combinados o commit local 6384d9a e o remoto e659013. Conflito restrito a backend/src/data.js.
+- Preservado exatamente o array users do commit local, incluindo nomes, e-mails, papéis e IDs. Login.jsx permanece como no commit local.
+- Mantidos imports e initialNews do colega, incluindo as notícias de Economia e Esportes. Notícias duplicadas indevidamente em users não foram incorporadas ao array de usuários.
+- Nenhum reset, exclusão de trabalho ou push forçado utilizado. .env e banco não foram editados diretamente.
+- Verificações: node --check backend/src/data.js e git diff --cached --check passaram; nenhum caminho em conflito restante.
+- npm.cmd test: 23 testes passaram (1 frontend e 22 backend). npm.cmd run build: aprovado, 1989 módulos; avisos use client de dependências não bloqueantes.
+- Verificação adicional em SQLite em memória: login das quatro contas locais aprovado, com IDs e papéis preservados.
+- Identificado e-mail inicial antigo super@jynx.local em Login.jsx; consultado usuário antes de alterar. IDs/autoria histórica não migrados nesta resolução.
+- Usuário pediu retirar o e-mail automático: estado inicial de email em Login.jsx alterado para string vazia. Senha demonstrativa e lista de contas preservadas.
+- Preparado commit de merge local unindo ambos os históricos, sem reescrever commits. Envio ao GitHub depende da próxima escolha do usuário, conforme acompanhamento solicitado.

@@ -1,3 +1,7 @@
+import Economia from './pages/Economia.jsx';
+import SaoPaulo from './pages/SaoPaulo.jsx';
+import BrasileiraoEmbed from './pages/BrasileiraoEmbed.jsx';
+import Esportes from './pages/Esportes.jsx';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
@@ -13,6 +17,10 @@ import './styles.css';
 // A mesma organização de rotas do trabalho REACT 3.
 const rotas = createBrowserRouter([
   { path: '/', element: <Inicio /> },
+  { path: '/esportes', element: <Esportes /> },
+  { path: '/economia', element: <Economia /> },
+  { path: '/sao-paulo', element: <SaoPaulo /> },
+  { path: '/embed/brasileirao', element: <BrasileiraoEmbed /> },
   { path: '/noticia/:id', element: <Noticia /> },
   { path: '/login', element: <Login /> },
   { path: '/admin', element: <Painel /> },
